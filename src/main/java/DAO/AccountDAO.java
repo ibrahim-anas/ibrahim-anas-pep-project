@@ -4,12 +4,11 @@ import Model.Account;
 import Util.ConnectionUtil;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class AccountDAO {
 
     /**
+     * Inserts a new account into the database.
      * @param account The Account to create
      * @return The successfully created account
      */
@@ -20,10 +19,9 @@ public class AccountDAO {
             String sql = "INSERT INTO Account (username, password) VALUES (?,?)";
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
-            ps.setString(0, account.getUsername());
-            ps.setString(1, account.getPassword());
+            ps.setString(1, account.getUsername());
+            ps.setString(2, account.getPassword());
 
-            int rowsAffected = ps.executeUpdate();
             ResultSet generatedkeys = ps.getGeneratedKeys();
 
             if (generatedkeys.next()) {
@@ -35,6 +33,36 @@ public class AccountDAO {
             System.out.println(e.getMessage());
         }
 
+        return null;
+    }
+
+    /**
+     * Finds an account corresponding to a specified username.
+     * @param username Username of the account
+     * @return The account with the specified username, if it exists
+     */
+    public Account getAccountByUsername(String username) {
+        Connection connection = ConnectionUtil.getConnection();
+
+        try {
+            String sql = "SELECT * FROM Account WHERE username = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+
+            ps.setString(1, username);
+
+            ResultSet result = ps.executeQuery();
+
+            if (result.next()) {
+                int account_id = result.getInt("account_id");
+                String password = result.getString("password");
+
+                return new Account(account_id, username, password);
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        
         return null;
     }
 }

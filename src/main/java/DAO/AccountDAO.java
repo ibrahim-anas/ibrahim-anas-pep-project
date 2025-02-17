@@ -8,7 +8,7 @@ import java.sql.*;
 public class AccountDAO {
 
     /**
-     * Inserts a new account into the database.
+     * Inserts an account into the account table.
      * @param account The Account to create
      * @return The successfully created account
      */
@@ -16,16 +16,17 @@ public class AccountDAO {
         Connection connection = ConnectionUtil.getConnection();
 
         try {
-            String sql = "INSERT INTO Account (username, password) VALUES (?,?)";
+            String sql = "INSERT INTO account (username, password) VALUES (?,?)";
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             ps.setString(1, account.getUsername());
             ps.setString(2, account.getPassword());
 
-            ResultSet generatedkeys = ps.getGeneratedKeys();
+            ps.executeUpdate();
+            ResultSet generatedKeys = ps.getGeneratedKeys();
 
-            if (generatedkeys.next()) {
-                int account_id = generatedkeys.getInt(1);
+            if (generatedKeys.next()) {
+                int account_id = generatedKeys.getInt("account_id");
                 return new Account(account_id, account.getUsername(), account.getPassword());
             }
 
@@ -37,15 +38,15 @@ public class AccountDAO {
     }
 
     /**
-     * Finds an account corresponding to a specified username.
-     * @param username Username of the account
+     * Finds the account with the specified username.
+     * @param username 
      * @return The account with the specified username, if it exists
      */
     public Account getAccountByUsername(String username) {
         Connection connection = ConnectionUtil.getConnection();
 
         try {
-            String sql = "SELECT * FROM Account WHERE username = ?";
+            String sql = "SELECT * FROM account WHERE username = ?";
             PreparedStatement ps = connection.prepareStatement(sql);
 
             ps.setString(1, username);
@@ -54,6 +55,36 @@ public class AccountDAO {
 
             if (result.next()) {
                 int account_id = result.getInt("account_id");
+                String password = result.getString("password");
+
+                return new Account(account_id, username, password);
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        
+        return null;
+    }
+
+    /**
+     * Finds the account with the specified account id.
+     * @param account_id 
+     * @return The account with the specified account id, if it exists
+     */
+    public Account getAccountByID(int account_id) {
+        Connection connection = ConnectionUtil.getConnection();
+
+        try {
+            String sql = "SELECT * FROM account WHERE account_id = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+
+            ps.setInt(1, account_id);
+
+            ResultSet result = ps.executeQuery();
+
+            if (result.next()) {
+                String username = result.getString("username");
                 String password = result.getString("password");
 
                 return new Account(account_id, username, password);

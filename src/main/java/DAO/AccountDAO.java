@@ -4,6 +4,7 @@ import Model.Account;
 import Util.ConnectionUtil;
 
 import java.sql.*;
+import java.util.*;
 
 public class AccountDAO {
 
@@ -96,4 +97,31 @@ public class AccountDAO {
         
         return null;
     }
+
+    // public List<Account> getAccounts() {
+    //     Connection connection = ConnectionUtil.getConnection();
+    //     List<Account> accounts = new ArrayList<>();
+
+    //     try {
+    //         String sql = "SELECT * FROM account";
+    //         PreparedStatement ps = connection.prepareStatement(sql);
+
+    //         ResultSet rs = ps.executeQuery();
+
+    //         while (rs.next()) {
+    //             int account_id = rs.getInt("account_id");
+    //             String username = rs.getString("username");
+    //             String password = rs.getString("password");
+
+    //             accounts.add(new Account(account_id, username, password));
+    //         }
+
+    //         return accounts;
+
+    //     } catch (SQLException e) {
+    //         System.out.println(e.getMessage());
+    //     }
+        
+    //     return null;
+    // }
 }

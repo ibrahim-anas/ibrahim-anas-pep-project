@@ -34,9 +34,6 @@ public class AccountService {
         return accountDAO.getAccountByUserAndPass(account);
     }
 
-
-
-
     // public List<Account> getAccounts() {
     //     return this.accountDAO.getAccounts();
     // }

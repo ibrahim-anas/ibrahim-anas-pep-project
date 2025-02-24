@@ -2,7 +2,6 @@ package DAO;
 
 import Model.Account;
 import Util.ConnectionUtil;
-
 import java.sql.*;
 // import java.util.*;
 
@@ -38,7 +37,6 @@ public class AccountDAO {
         return null;
     }
 
-
     /**
      * Finds the account with the specified username.
      * @param username 
@@ -68,7 +66,6 @@ public class AccountDAO {
         
         return null;
     }
-
 
      /**
      * Finds the account with the specified username.
@@ -100,7 +97,6 @@ public class AccountDAO {
         return null;
     }   
 
-
     /**
      * Finds the account with the specified account id.
      * @param account_id 
@@ -130,7 +126,6 @@ public class AccountDAO {
         
         return null;
     }
-
 
     // public List<Account> getAccounts() {
     //     Connection connection = ConnectionUtil.getConnection();

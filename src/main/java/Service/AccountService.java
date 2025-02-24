@@ -25,6 +25,15 @@ public class AccountService {
         return null;
     }
 
+    /**
+     * Checks to make sure the provided username and password match those of an existing account
+     * @param account
+     * @return The account with a match to the provided account object
+     */
+    public Account verifyLogin(Account account) {
+        return accountDAO.getAccountByUserAndPass(account);
+    }
+
 
 
 

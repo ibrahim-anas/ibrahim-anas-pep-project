@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 import Controller.SocialMediaController;
 import io.javalin.Javalin;
 

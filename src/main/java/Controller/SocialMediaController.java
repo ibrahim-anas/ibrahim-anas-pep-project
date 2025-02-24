@@ -31,6 +31,7 @@ public class SocialMediaController {
     public Javalin startAPI() {
         Javalin app = Javalin.create();
         app.post("/register", this::postAccountHandler);
+        app.post("/login", this::postAuthenticationHandler);
         // app.post("/messages", null);
         return app;
     }
@@ -41,14 +42,30 @@ public class SocialMediaController {
      */
     private void postAccountHandler(Context context) throws JsonProcessingException {
         ObjectMapper om = new ObjectMapper();
-        Account account = accountService.createAccount(om.readValue(context.body(), Account.class));
-        if (account == null) {
-            context.status(400);
+        Account account = om.readValue(context.body(), Account.class);
+        Account matchingAccount = accountService.createAccount(account);
+        
+        if (matchingAccount != null) {
+            context.json(om.writeValueAsString(matchingAccount));
         } else {
-            context.status(200);
-            context.json(om.writeValueAsString(account));
+            context.status(400);
         }
     }
 
 
+    /**
+     * The POST request handler for the /login endpoint.
+     * @param context The Javalin Context object manages information about both the HTTP request and response.
+     */
+    private void postAuthenticationHandler(Context context) throws JsonProcessingException {
+        ObjectMapper om = new ObjectMapper();
+        Account account = om.readValue(context.body(), Account.class);
+        Account matchingAccount = accountService.verifyLogin(account);
+
+        if (matchingAccount != null) {
+            context.json(om.writeValueAsString(matchingAccount));
+        } else {
+            context.status(401);
+        }
+    }
 }

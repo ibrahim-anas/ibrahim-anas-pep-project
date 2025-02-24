@@ -4,7 +4,7 @@ import Model.Account;
 import Util.ConnectionUtil;
 
 import java.sql.*;
-import java.util.*;
+// import java.util.*;
 
 public class AccountDAO {
 
@@ -38,7 +38,39 @@ public class AccountDAO {
         return null;
     }
 
+
     /**
+     * Finds the account with the specified username.
+     * @param username 
+     * @return The account with the specified username, if it exists
+     */
+    public Account getAccountByUserAndPass(Account account) {
+        Connection connection = ConnectionUtil.getConnection();
+
+        try {
+            String sql = "SELECT * FROM account WHERE username = ? AND password = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+
+            ps.setString(1, account.getUsername());
+            ps.setString(2, account.getPassword());
+
+            ResultSet result = ps.executeQuery();
+
+            if (result.next()) {
+                int account_id = result.getInt("account_id");
+
+                return new Account(account_id, account.getUsername(), account.getPassword());
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        
+        return null;
+    }
+
+
+     /**
      * Finds the account with the specified username.
      * @param username 
      * @return The account with the specified username, if it exists
@@ -66,7 +98,8 @@ public class AccountDAO {
         }
         
         return null;
-    }
+    }   
+
 
     /**
      * Finds the account with the specified account id.
@@ -97,6 +130,7 @@ public class AccountDAO {
         
         return null;
     }
+
 
     // public List<Account> getAccounts() {
     //     Connection connection = ConnectionUtil.getConnection();

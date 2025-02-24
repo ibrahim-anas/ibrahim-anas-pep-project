@@ -32,7 +32,8 @@ public class SocialMediaController {
         Javalin app = Javalin.create();
         app.post("/register", this::postAccountHandler);
         app.post("/login", this::postAuthenticationHandler);
-        // app.post("/messages", null);
+        app.post("/messages", this::postMessageHandler);
+
         return app;
     }
 
@@ -52,7 +53,6 @@ public class SocialMediaController {
         }
     }
 
-
     /**
      * The POST request handler for the /login endpoint.
      * @param context The Javalin Context object manages information about both the HTTP request and response.
@@ -66,6 +66,22 @@ public class SocialMediaController {
             context.json(om.writeValueAsString(matchingAccount));
         } else {
             context.status(401);
+        }
+    }
+
+    /**
+     * The POST request handler for the /messages endpoint.
+     * @param context The Javalin Context object manages information about both the HTTP request and response.
+     */
+    private void postMessageHandler(Context context) throws JsonProcessingException {
+        ObjectMapper om = new ObjectMapper();
+        Message message = om.readValue(context.body(), Message.class);
+        Message createdMessage = messageService.createMessage(message);
+
+        if (createdMessage != null) {
+            context.json(om.writeValueAsString(createdMessage));
+        } else {
+            context.status(400);
         }
     }
 }

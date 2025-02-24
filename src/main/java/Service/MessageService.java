@@ -16,7 +16,7 @@ public class MessageService {
 
     public Message createMessage(Message message) {
         if (message.getMessage_text().length() > 0 && message.getMessage_text().length() < 255 && this.accountDAO.getAccountByID(message.getPosted_by()) != null) {
-            return messageDAO.addMessage(message);
+            return messageDAO.insertMessage(message);
         }
         
         return null;

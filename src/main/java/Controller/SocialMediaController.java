@@ -8,6 +8,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import java.util.*;
 
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller. The endpoints you will need can be
@@ -33,13 +34,14 @@ public class SocialMediaController {
         app.post("/register", this::postAccountHandler);
         app.post("/login", this::postAuthenticationHandler);
         app.post("/messages", this::postMessageHandler);
+        app.get("/messages", this::getAllMessagesHandler);
 
         return app;
     }
 
     /**
      * The POST request handler for the /register endpoint.
-     * @param context The Javalin Context object manages information about both the HTTP request and response.
+     * @param context The Javalin Context object
      */
     private void postAccountHandler(Context context) throws JsonProcessingException {
         ObjectMapper om = new ObjectMapper();
@@ -55,7 +57,7 @@ public class SocialMediaController {
 
     /**
      * The POST request handler for the /login endpoint.
-     * @param context The Javalin Context object manages information about both the HTTP request and response.
+     * @param context The Javalin Context object
      */
     private void postAuthenticationHandler(Context context) throws JsonProcessingException {
         ObjectMapper om = new ObjectMapper();
@@ -71,7 +73,7 @@ public class SocialMediaController {
 
     /**
      * The POST request handler for the /messages endpoint.
-     * @param context The Javalin Context object manages information about both the HTTP request and response.
+     * @param context The Javalin Context object
      */
     private void postMessageHandler(Context context) throws JsonProcessingException {
         ObjectMapper om = new ObjectMapper();
@@ -83,5 +85,16 @@ public class SocialMediaController {
         } else {
             context.status(400);
         }
+    }
+
+    /**
+     * The GET request hangler for the /messages endpoint.
+     * @param context The Javalin Context object
+     */
+    public void getAllMessagesHandler(Context context) throws JsonProcessingException {
+        ObjectMapper om = new ObjectMapper();
+        List<Message> messages = messageService.getAllMessages();
+
+        context.json(om.writeValueAsString(messages));
     }
 }

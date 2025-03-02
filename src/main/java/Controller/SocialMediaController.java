@@ -35,6 +35,7 @@ public class SocialMediaController {
         app.post("/login", this::postAuthenticationHandler);
         app.post("/messages", this::postMessageHandler);
         app.get("/messages", this::getAllMessagesHandler);
+        app.get("/messages/{message_id}", this::getMessageByIdHandler);
 
         return app;
     }
@@ -43,13 +44,12 @@ public class SocialMediaController {
      * The POST request handler for the /register endpoint.
      * @param context The Javalin Context object
      */
-    private void postAccountHandler(Context context) throws JsonProcessingException {
-        ObjectMapper om = new ObjectMapper();
-        Account account = om.readValue(context.body(), Account.class);
+    private void postAccountHandler(Context context) {
+        Account account = context.bodyAsClass(Account.class);
         Account matchingAccount = accountService.createAccount(account);
         
         if (matchingAccount != null) {
-            context.json(om.writeValueAsString(matchingAccount));
+            context.json(matchingAccount);
         } else {
             context.status(400);
         }
@@ -59,13 +59,12 @@ public class SocialMediaController {
      * The POST request handler for the /login endpoint.
      * @param context The Javalin Context object
      */
-    private void postAuthenticationHandler(Context context) throws JsonProcessingException {
-        ObjectMapper om = new ObjectMapper();
-        Account account = om.readValue(context.body(), Account.class);
+    private void postAuthenticationHandler(Context context) {
+        Account account = context.bodyAsClass(Account.class);
         Account matchingAccount = accountService.verifyLogin(account);
 
         if (matchingAccount != null) {
-            context.json(om.writeValueAsString(matchingAccount));
+            context.json(matchingAccount);
         } else {
             context.status(401);
         }
@@ -75,13 +74,12 @@ public class SocialMediaController {
      * The POST request handler for the /messages endpoint.
      * @param context The Javalin Context object
      */
-    private void postMessageHandler(Context context) throws JsonProcessingException {
-        ObjectMapper om = new ObjectMapper();
-        Message message = om.readValue(context.body(), Message.class);
+    private void postMessageHandler(Context context) {
+        Message message = context.bodyAsClass(Message.class);
         Message createdMessage = messageService.createMessage(message);
 
         if (createdMessage != null) {
-            context.json(om.writeValueAsString(createdMessage));
+            context.json(createdMessage);
         } else {
             context.status(400);
         }
@@ -91,10 +89,24 @@ public class SocialMediaController {
      * The GET request hangler for the /messages endpoint.
      * @param context The Javalin Context object
      */
-    public void getAllMessagesHandler(Context context) throws JsonProcessingException {
-        ObjectMapper om = new ObjectMapper();
+    public void getAllMessagesHandler(Context context) {
         List<Message> messages = messageService.getAllMessages();
 
-        context.json(om.writeValueAsString(messages));
+        context.json(messages);
+    }
+
+    /**
+     * The GET request hangler for the /messages/{message_id} endpoint.
+     * @param context The Javalin Context object
+     */
+    public void getMessageByIdHandler(Context context) {
+        int message_id = Integer.parseInt(context.pathParam("message_id")); 
+        Message message = messageService.getMessageByID(message_id);
+
+        if (message != null) {
+            context.json(message);
+        } else {
+            context.json("");
+        }
     }
 }

@@ -51,6 +51,24 @@ public class MessageService {
      * @return The successfully deleted message
      */
     public Message deleteMessageByID(int id) {
-        return messageDAO.deleteMessageByID(id);
+        if (messageDAO.getMessageByID(id) != null) {
+            return messageDAO.deleteMessageByID(id);
+        }
+
+        return null;
+    }
+
+    /**
+     * Updates the message text for a message with specified 'id'.
+     * @param id The message id
+     * @param text The updated message text
+     * @return The successfully updated message
+     */
+    public Message updateMessageText(int id, String text) {
+        if (text.length() > 0 && text.length() <= 255 && messageDAO.getMessageByID(id) != null) {
+            return messageDAO.updateMessageText(id, text);
+        } 
+
+        return null;
     }
 }

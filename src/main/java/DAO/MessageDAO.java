@@ -111,10 +111,6 @@ public class MessageDAO {
         Connection connection = ConnectionUtil.getConnection();
 
         try {
-            if (getMessageByID(id) == null) {
-                return null;
-            }
-
             Message message = getMessageByID(id);
 
             String sql = "DELETE FROM message WHERE message_id = ?";
@@ -128,6 +124,35 @@ public class MessageDAO {
             System.out.println(e.getMessage());
         }
 
+        return null;
+    }
+
+    /**
+     * Updates the message_text field for a message by message_id
+     * @param id The message_id
+     * @param text The updated message_text
+     * @return The successfully updated message
+     */
+    public Message updateMessageText(int id, String text) {
+        Connection connection = ConnectionUtil.getConnection();
+
+        try {
+            String sql = "UPDATE message SET message_text = ? WHERE message_id = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+
+            ps.setString(1, text);
+            ps.setInt(2, id);
+
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected > 0) {
+                return getMessageByID(id);
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        
         return null;
     }
 }

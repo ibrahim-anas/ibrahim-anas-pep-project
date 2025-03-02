@@ -4,9 +4,15 @@ import Service.AccountService;
 import Service.MessageService;
 import Model.Account;
 import Model.Message;
+
+import java.util.*;
+
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-import java.util.*;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller. The endpoints you will need can be
@@ -35,6 +41,7 @@ public class SocialMediaController {
         app.get("/messages", this::getAllMessagesHandler);
         app.get("/messages/{message_id}", this::getMessageByIdHandler);
         app.delete("/messages/{message_id}", this::deleteMessageByID);
+        app.patch("/messages/{message_id}", this::patchMesssageText);
 
         return app;
     }
@@ -108,7 +115,11 @@ public class SocialMediaController {
             context.json("");
         }
     }
-
+    
+    /**
+     * The DELETE request handler for the /messages/{message_id} endpoint.
+     * @param context The Javalin Context object
+     */
     public void deleteMessageByID(Context context) {
         int message_id = Integer.parseInt(context.pathParam("message_id"));
         Message message = messageService.deleteMessageByID(message_id);
@@ -118,5 +129,27 @@ public class SocialMediaController {
         } else {
             context.json("");
         }
+    }
+
+    /**
+     * The Patch request handler for the /messages/{message_id} endpoint.
+     * @param context The Javalin context object
+     * @throws JsonProcessingException
+     */
+    public void patchMesssageText(Context context) throws JsonProcessingException {
+        ObjectMapper om = new ObjectMapper();
+
+        int message_id = Integer.parseInt(context.pathParam("message_id"));
+        JsonNode jsonNode = om.readTree(context.body());
+        String message_text = jsonNode.path("message_text").asText();
+        Message message = messageService.updateMessageText(message_id, message_text);
+
+        if (message != null) {
+            context.json(message);
+        } else {
+            context.status(400);
+        }
+        
+
     }
 }

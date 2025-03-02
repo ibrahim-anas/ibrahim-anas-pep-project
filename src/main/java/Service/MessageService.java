@@ -71,4 +71,13 @@ public class MessageService {
 
         return null;
     }
+
+    /**
+     * Retrieves a list of all messages posted by a specific user.
+     * @param posted_by The user that posted the message
+     * @return A list containing all messages posted by the user
+     */
+    public List<Message> getAllMessagesForUser(int posted_by) {
+        return messageDAO.getAllMessagesForUser(posted_by);
+    }
 }

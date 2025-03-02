@@ -52,14 +52,12 @@ public class MessageDAO {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                Message message = new Message();
+                int message_id = rs.getInt("message_id");
+                int posted_by = rs.getInt("posted_by");
+                String message_text = rs.getString("message_text");
+                Long time_posted_epoch = rs.getLong("time_posted_epoch");
 
-                message.setMessage_id(rs.getInt("message_id"));
-                message.setPosted_by(rs.getInt("posted_by"));
-                message.setMessage_text(rs.getString("message_text"));
-                message.setTime_posted_epoch(rs.getLong("time_posted_epoch"));
-
-                messages.add(message);
+                messages.add(new Message(message_id, posted_by, message_text, time_posted_epoch));
             }
 
             return messages;
@@ -154,5 +152,37 @@ public class MessageDAO {
         }
         
         return null;
+    }
+
+    /**
+     * Retrieves all messages posted by a specific user.
+     * @param posted_by The user id
+     * @return A list containing all messages posted by the user
+     */
+    public List<Message> getAllMessagesForUser(int posted_by) {
+        Connection connection = ConnectionUtil.getConnection();
+        List<Message> messages = new ArrayList<>();
+
+        try {
+            String sql = "SELECT * FROM message WHERE posted_by = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+
+            ps.setInt(1, posted_by);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                int message_id = rs.getInt("message_id");
+                String message_text = rs.getString("message_text");
+                Long time_posted_epoch = rs.getLong("time_posted_epoch");
+
+                messages.add(new Message(message_id, posted_by, message_text, time_posted_epoch));
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return messages;
     }
 }

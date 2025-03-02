@@ -10,9 +10,9 @@ import java.util.*;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller. The endpoints you will need can be
@@ -42,6 +42,7 @@ public class SocialMediaController {
         app.get("/messages/{message_id}", this::getMessageByIdHandler);
         app.delete("/messages/{message_id}", this::deleteMessageByID);
         app.patch("/messages/{message_id}", this::patchMesssageText);
+        app.get("/accounts/{account_id}/messages", this::getAllMessagesForUserHandler);
 
         return app;
     }
@@ -149,7 +150,16 @@ public class SocialMediaController {
         } else {
             context.status(400);
         }
-        
+    }
 
+    /**
+     * The GET request handler for the /accounts/{account_id}/messages endpoint.
+     * @param context The Javalin Context object
+     */
+    public void getAllMessagesForUserHandler(Context context) {
+        int posted_by = Integer.parseInt(context.pathParam("account_id"));
+        List<Message> messages = messageService.getAllMessagesForUser(posted_by);
+
+        context.json(messages);
     }
 }

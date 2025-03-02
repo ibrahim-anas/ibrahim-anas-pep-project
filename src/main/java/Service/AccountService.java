@@ -3,8 +3,6 @@ package Service;
 import DAO.AccountDAO;
 import Model.Account;
 
-// import java.util.*;
-
 public class AccountService {
     AccountDAO accountDAO;
 
@@ -33,9 +31,4 @@ public class AccountService {
     public Account verifyLogin(Account account) {
         return accountDAO.getAccountByUserAndPass(account);
     }
-
-    // public List<Account> getAccounts() {
-    //     return this.accountDAO.getAccounts();
-    // }
-
 }

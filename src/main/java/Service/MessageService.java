@@ -36,7 +36,21 @@ public class MessageService {
         return messageDAO.getAllMessages();
     }
 
+    /**
+     * Retreives a message by message id.
+     * @param id The message id
+     * @return The succesfully retrieved message
+     */
     public Message getMessageByID(int id) {
         return messageDAO.getMessageByID(id);
+    }
+
+    /**
+     * Deletes a message by message id.
+     * @param id The message id
+     * @return The successfully deleted message
+     */
+    public Message deleteMessageByID(int id) {
+        return messageDAO.deleteMessageByID(id);
     }
 }

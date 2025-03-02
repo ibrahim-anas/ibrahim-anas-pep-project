@@ -4,8 +4,6 @@ import Service.AccountService;
 import Service.MessageService;
 import Model.Account;
 import Model.Message;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import java.util.*;
@@ -36,6 +34,7 @@ public class SocialMediaController {
         app.post("/messages", this::postMessageHandler);
         app.get("/messages", this::getAllMessagesHandler);
         app.get("/messages/{message_id}", this::getMessageByIdHandler);
+        app.delete("/messages/{message_id}", this::deleteMessageByID);
 
         return app;
     }
@@ -102,6 +101,17 @@ public class SocialMediaController {
     public void getMessageByIdHandler(Context context) {
         int message_id = Integer.parseInt(context.pathParam("message_id")); 
         Message message = messageService.getMessageByID(message_id);
+
+        if (message != null) {
+            context.json(message);
+        } else {
+            context.json("");
+        }
+    }
+
+    public void deleteMessageByID(Context context) {
+        int message_id = Integer.parseInt(context.pathParam("message_id"));
+        Message message = messageService.deleteMessageByID(message_id);
 
         if (message != null) {
             context.json(message);

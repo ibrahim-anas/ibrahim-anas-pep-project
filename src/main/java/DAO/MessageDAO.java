@@ -72,8 +72,8 @@ public class MessageDAO {
     }
 
         /**
-         * Retrieves a message by its id.
-         * @param id Message id
+         * Retrieves a message from the message table by a message_id.
+         * @param id The message_id
          * @return The successfully retrieved message
          */
     public Message getMessageByID(int id) {
@@ -94,6 +94,35 @@ public class MessageDAO {
 
                 return new Message(id, posted_by, message_text, time_posted_epoch);
             }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return null;
+    }
+
+    /**
+     * Deletes a message from the message table by a message_id.
+     * @param id The message_id
+     * @return The successfully delted message
+     */
+    public Message deleteMessageByID(int id) {
+        Connection connection = ConnectionUtil.getConnection();
+
+        try {
+            if (getMessageByID(id) == null) {
+                return null;
+            }
+
+            Message message = getMessageByID(id);
+
+            String sql = "DELETE FROM message WHERE message_id = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, id);
+            ps.executeUpdate();
+
+            return message;
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
